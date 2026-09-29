@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>SpamGuard - Spam Message Detection</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🛡️ SpamGuard
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/about">About</a>
+    </div>
+
+</nav>
+
+
+<div class="hero">
+
+    <h1>📱 Spam Message Detection</h1>
+
+    <p>
+        Detect whether a message is Spam or Not Spam using
+        Machine Learning.
+    </p>
+
+</div>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Check Your Message</h2>
+
+        <p class="description">
+            Enter a message below and our ML model will analyze it.
+        </p>
+
+        <form method="POST">
+
+            <textarea
+                name="message"
+                placeholder="Enter your message here..."
+                required></textarea>
+
+            <button type="submit">
+                🔍 Detect Message
+            </button>
+
+        </form>
+
+
+        {% if result %}
+
+        <div class="result
+            {% if result == 'SPAM MESSAGE' %}
+                spam
+            {% else %}
+                not-spam
+            {% endif %}
+        ">
+
+            {% if result == "SPAM MESSAGE" %}
+                <div class="result-icon">🚨</div>
+            {% else %}
+                <div class="result-icon">✅</div>
+            {% endif %}
+
+            <h2>{{ result }}</h2>
+
+            <p>
+                Confidence: <strong>{{ confidence }}%</strong>
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+
+<footer>
+
+    <p>
+        SpamGuard | Machine Learning Spam Detection System
+    </p>
+
+    <p>
+        MSc Computer Science Project
+    </p>
+
+</footer>
+
+</body>
+</html>

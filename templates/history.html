@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Detection History</title>
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+<nav class="navbar">
+
+    <div class="logo">
+        🛡️ SpamGuard
+    </div>
+
+    <div class="nav-links">
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/about">About</a>
+    </div>
+
+</nav>
+
+
+<div class="container">
+
+    <div class="card">
+
+        <h1>📜 Detection History</h1>
+
+        {% if history %}
+
+            {% for item in history %}
+
+            <div class="history-item
+                {% if item.result == 'SPAM MESSAGE' %}
+                    history-spam
+                {% else %}
+                    history-safe
+                {% endif %}
+            ">
+
+                <p>
+                    <strong>Message:</strong>
+                    {{ item.message }}
+                </p>
+
+                <p>
+                    <strong>Result:</strong>
+                    {{ item.result }}
+                </p>
+
+                <p>
+                    <strong>Confidence:</strong>
+                    {{ item.confidence }}%
+                </p>
+
+            </div>
+
+            {% endfor %}
+
+        {% else %}
+
+            <p>No detection history yet.</p>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+</body>
+</html>
