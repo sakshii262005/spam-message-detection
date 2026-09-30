@@ -1,28 +1,50 @@
 import pandas as pd
 import joblib
+import re
 
 from sklearn.model_selection import train_test_split
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.naive_bayes import MultinomialNB
 from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 
-from sklearn.metrics import accuracy_score, classification_report
 
-
-# Load UCI SMS Spam Collection
-data = pd.read_csv(
-    "SMSSpamCollection",
-    sep="\t",
-    names=["label", "message"]
-)
+# -----------------------------
+# 1. Load Dataset
+# -----------------------------
+data = pd.read_csv("spam.csv")
 
 print("Total messages:", len(data))
+print("\nDataset columns:", data.columns.tolist())
+print("\nClass distribution:")
+print(data["label"].value_counts())
 
-# Input and output
+
+# -----------------------------
+# 2. Text Cleaning
+# -----------------------------
+def clean_text(text):
+    text = str(text).lower()
+    text = re.sub(r"http\S+|www\S+", " URL ", text)
+    text = re.sub(r"\d+", " NUMBER ", text)
+    text = re.sub(r"[^a-zA-Z\s]", " ", text)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+data["message"] = data["message"].apply(clean_text)
+
+
+# -----------------------------
+# 3. Input and Output
+# -----------------------------
 X = data["message"]
 y = data["label"]
 
-# Split dataset into training and testing
+
+# -----------------------------
+# 4. Train/Test Split
+# -----------------------------
 X_train, X_test, y_train, y_test = train_test_split(
     X,
     y,
@@ -31,28 +53,59 @@ X_train, X_test, y_train, y_test = train_test_split(
     stratify=y
 )
 
-# Create ML pipeline
+
+# -----------------------------
+# 5. ML Pipeline
+# -----------------------------
 model = Pipeline([
-    ("tfidf", TfidfVectorizer()),
-    ("classifier", MultinomialNB())
+    (
+        "tfidf",
+        TfidfVectorizer(
+            ngram_range=(1, 2),
+            min_df=1,
+            sublinear_tf=True
+        )
+    ),
+    (
+        "classifier",
+        MultinomialNB(alpha=0.1)
+    )
 ])
 
-# Train model
+
+# -----------------------------
+# 6. Train Model
+# -----------------------------
 model.fit(X_train, y_train)
 
-# Test model
+
+# -----------------------------
+# 7. Test Model
+# -----------------------------
 predictions = model.predict(X_test)
 
-# Accuracy
+
+# -----------------------------
+# 8. Evaluation
+# -----------------------------
 accuracy = accuracy_score(y_test, predictions)
 
-print("\nModel trained successfully!")
-print("Accuracy:", round(accuracy * 100, 2), "%")
+print("\n==============================")
+print("MODEL TRAINING COMPLETED")
+print("==============================")
+
+print("\nAccuracy:", round(accuracy * 100, 2), "%")
 
 print("\nClassification Report:")
 print(classification_report(y_test, predictions))
 
-# Save model
+print("\nConfusion Matrix:")
+print(confusion_matrix(y_test, predictions))
+
+
+# -----------------------------
+# 9. Save Model
+# -----------------------------
 joblib.dump(model, "model.pkl")
 
-print("New model saved as model.pkl")
+print("\nNew model saved successfully as model.pkl")

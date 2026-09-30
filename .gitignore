@@ -5,3 +5,7 @@ venv/
 env
 .vscode/
 *.log
+spam.csv
+spam_backup.csv
+SMSSpamCollection
+model_backup.pkl

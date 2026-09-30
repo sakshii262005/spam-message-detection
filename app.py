@@ -3,7 +3,7 @@ import joblib
 
 app = Flask(__name__)
 
-# Load trained ML model
+# Load trained ML model4111
 model = joblib.load("model.pkl")
 
 # Store detection history
